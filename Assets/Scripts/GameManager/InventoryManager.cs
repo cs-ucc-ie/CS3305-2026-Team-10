@@ -5,12 +5,12 @@ using System;
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
-    [SerializeField] private List<InventorySlot> slots = new();
+    [SerializeField] private List<InventorySlot> allSlots = new();
     public List<InventorySlot> quickSlots = new();
     [SerializeField] private int selectedQuickSlotIndex = 0;
-    public event Action OnQuickSlotsChanged;                // change of quick slots content
+    public event Action OnQuickSlotsChanged;                // change of quick slots e.g. now referring to another slot
     public event Action<int> OnQuickSlotIndexChanged;       // change of selected quick slot index
-    public event Action OnInventoryChanged;                 // change of inventory content
+    public event Action OnInventoryChanged;                 // change of inventory slot e.g. count reduced
 
     void Awake()
     {
@@ -40,7 +40,7 @@ public class InventoryManager : MonoBehaviour
 
     public int GetItemCount(Item item)
     {
-        foreach (var slot in slots)
+        foreach (var slot in allSlots)
         {
             if (slot.item == item)
                 return slot.count;
@@ -60,7 +60,7 @@ public class InventoryManager : MonoBehaviour
 
     public List<InventorySlot> GetSlots()
     {
-        return slots;
+        return allSlots;
     }
 
     public List<InventorySlot> GetQuickSlots()
@@ -86,11 +86,10 @@ public class InventoryManager : MonoBehaviour
             quickSlots[selectedQuickSlotIndex].Use();
             if (quickSlots[selectedQuickSlotIndex].count == 0)
             {
-                slots.Remove(quickSlots[selectedQuickSlotIndex]);
+                allSlots.Remove(quickSlots[selectedQuickSlotIndex]);
                 quickSlots[selectedQuickSlotIndex] = null;
             }
             // item may used so count changed
-            // OnQuickSlotsChanged?.Invoke();
             OnInventoryChanged?.Invoke();
         }
     }
@@ -103,27 +102,27 @@ public class InventoryManager : MonoBehaviour
 
     public void AddItem(Item item, int amount = 1)
     {
-        var slot = slots.Find(s => s.item == item);
+        var slot = allSlots.Find(s => s.item == item);
         if (slot != null)
             slot.count += amount;
         else
-            slots.Add(new InventorySlot(item, amount));
+            allSlots.Add(new InventorySlot(item, amount));
         OnInventoryChanged?.Invoke();
     }
 
     public bool RemoveItem(Item item, int amount)
     {
-        for (int i = 0; i < slots.Count; i++)
+        for (int i = 0; i < allSlots.Count; i++)
         {
-            if (slots[i].item == item)
+            if (allSlots[i].item == item)
             {
-                if (slots[i].count < amount)
+                if (allSlots[i].count < amount)
                     return false;
 
-                slots[i].count -= amount;
+                allSlots[i].count -= amount;
 
-                if (slots[i].count == 0)
-                    slots.RemoveAt(i);
+                if (allSlots[i].count == 0)
+                    allSlots.RemoveAt(i);
 
                 OnInventoryChanged?.Invoke();
                 return true;

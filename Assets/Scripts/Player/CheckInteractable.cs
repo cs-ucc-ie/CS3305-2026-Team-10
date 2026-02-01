@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class CheckInteractable : MonoBehaviour
 {
-    /* 
-        This script checks for interactable objects in front of the player.
-        If the player presses the "E" key while looking at an interactable object within a certain distance,
-        it calls the Interact method on that object.
-    */
     public float interactDistance = 2f;
     private InteractableObject interactableObject;
 
-    void Update()
+    void OnEnable()
+    {
+        InputManager.Instance.OnInteractPressed += TryInteract;
+    }
+
+    void OnDisable()
+    {
+        InputManager.Instance.OnInteractPressed -= TryInteract;
+    }
+
+    public void TryInteract()
     {
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
@@ -18,13 +23,8 @@ public class CheckInteractable : MonoBehaviour
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
             interactableObject = hit.collider.gameObject.GetComponent<InteractableObject>();
-            if (interactableObject != null)
-            {
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    interactableObject.Interact();
-                }
-            }
+            if (interactableObject != null) interactableObject.Interact();
+            else Debug.Log("Nothing to interact.");
         }
     }
 }

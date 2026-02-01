@@ -10,7 +10,7 @@ public class QuickSlotUI : MonoBehaviour
     [SerializeField] private TMP_Text indexText;
     [SerializeField] private int index;                      // quick slot index 0-4
     [SerializeField] private InventorySlot slot;
-
+    
     void OnEnable()
     {
         InventoryManager.Instance.OnInventoryChanged += RefreshQuickSlotContent;

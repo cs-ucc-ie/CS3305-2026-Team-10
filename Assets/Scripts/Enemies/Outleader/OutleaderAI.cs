@@ -7,7 +7,7 @@ public class OutleaderAI : MonoBehaviour
 {
     public enum AIState{ Idle,Engage, Dead}
     public enum EngageState { TryMoveToPlayer, FollowNewWay, ReadyToFire, InFiringAnimation, MoveToRandLoc }
-    [Header("game object references")]
+    [Header("GameObject references")]
     private OutleaderSpriteDisplay spriteDisplay;
     public GameObject bulletPrefab;
     private Transform player;

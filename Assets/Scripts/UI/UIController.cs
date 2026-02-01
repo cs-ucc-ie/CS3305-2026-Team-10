@@ -7,7 +7,7 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
-    [Header("Game Object References")]
+    [Header("GameObject References")]
     [SerializeField] private TextMeshProUGUI playerHealthText;
     [SerializeField] private TextMeshProUGUI playerHungerText;
     [SerializeField] private RectTransform panel;

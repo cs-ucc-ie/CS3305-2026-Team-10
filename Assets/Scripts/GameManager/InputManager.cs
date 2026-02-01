@@ -1,8 +1,9 @@
 using UnityEngine;
-
+using System;
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
+    public event Action OnInteractPressed;
 
     private void Awake()
     {
@@ -17,8 +18,8 @@ public class InputManager : MonoBehaviour
     }
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked; // 锁定鼠标
-        Cursor.visible = false;                   // 隐藏鼠标
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;                  
     }
     void Update()
     {
@@ -40,7 +41,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             Debug.Log("Interact logic should be here");
-            // TODO: implement interact logic
+            OnInteractPressed?.Invoke();
         }
         
         // press ESC to toggle inventory ui

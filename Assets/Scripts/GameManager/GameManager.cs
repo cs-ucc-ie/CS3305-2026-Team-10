@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    /* 
-        This is the main GameManager script that persists across scenes. 
-        Other managers under GameManager will also persist due to this.
-        */
-void Awake(){
-    DontDestroyOnLoad(this.gameObject);
-}
+    public static GameManager Instance { get; private set; }
+    private void Awake()
+    {
+        // If an instance already exists and it's not this one, destroy this one
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Set the instance to this and protect it from scene loads
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 }
