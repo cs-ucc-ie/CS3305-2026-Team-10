@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1094175069977463132}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -13.213011, y: 4.17, z: 11.61352}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   idleMinWait: 0.8
   idleMaxWait: 2
   idleCheckDistance: 1
-  idleDetectRange: 25
+  idleDetectRange: 10
   detectAngle: 180
   obstacleMask:
     serializedVersion: 2

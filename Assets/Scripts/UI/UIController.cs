@@ -35,6 +35,20 @@ public class UIController : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        // PlayerStatsManager.Instance.OnPlayerDied += RefreshPlayerStats;
+        PlayerStatsManager.Instance.OnPlayerHungerChanged += RefreshHunger;
+        PlayerStatsManager.Instance.OnPlayerHealthChanged += RefreshHealth;
+    }
+
+    void OnDisable()
+    {
+        // PlayerStatsManager.Instance.OnPlayerDied += RefreshPlayerStats;
+        PlayerStatsManager.Instance.OnPlayerHungerChanged -= RefreshHunger;
+        PlayerStatsManager.Instance.OnPlayerHealthChanged -= RefreshHealth;
+    }
+
     void Start()
     {
         // calculate folded panel height
@@ -48,33 +62,24 @@ public class UIController : MonoBehaviour
             quickSlotUI.SetSlot(quickSlot, index);
             index ++;
         }
-
-        // for (int i = 0; i < 5; i++)
-        // {
-        //     Debug.Log(i);
-        //     var singleQuickSlot = Instantiate(quickSlotPrefab, quickSlotsGrid);
-        //     Debug.Log(i + "1");
-        //     singleQuickSlot.SetIndex(i);
-        //     Debug.Log(i + "2");
-        // }
+        // init player health and hunger text
+        playerHungerText.text = PlayerStatsManager.Instance.CurrentHunger.ToString();
+        playerHealthText.text = PlayerStatsManager.Instance.CurrentHealth.ToString();
     }
 
     void Update()
     {
         UpdateFoldableInventoryAnimation();
-        UpdatePlayerStats();
     }
 
-    private void UpdatePlayerStats()
+    private void RefreshHunger(int currentHunger)
     {
-        int currentHealth = PlayerStatsManager.Instance.currentHealth;
-        int maxHealth = PlayerStatsManager.Instance.maxHealth;
-        int currentHunger = PlayerStatsManager.Instance.currentHunger;
-        int maxHunger = PlayerStatsManager.Instance.maxHunger;
-        String health = currentHealth + "/" + maxHealth;
-        String hunger = currentHunger + "/" + maxHunger;
-        playerHealthText.text = health;
-        playerHungerText.text = hunger;
+        playerHungerText.text = currentHunger.ToString();
+    }
+
+    private void RefreshHealth(int currentHealth)
+    {
+        playerHealthText.text = currentHealth.ToString();
     }
 
     private void UpdateFoldableInventoryAnimation()

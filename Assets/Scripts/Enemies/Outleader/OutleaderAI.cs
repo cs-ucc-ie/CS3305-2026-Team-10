@@ -28,13 +28,13 @@ public class OutleaderAI : MonoBehaviour
     private float idleMoveTimer;
     private Vector3 moveTarget;
     [Header("idle detect config")]
-    [SerializeField] private float idleDetectRange = 25f;
+    [SerializeField] private float idleDetectRange = 10f;
     [SerializeField] private float detectAngle = 180f;
     [SerializeField] private LayerMask obstacleMask;
     [Header("engage config")]
     [SerializeField] private float engageMoveSpeed = 2f;
     [SerializeField] private float obstacleCheckDistance = 0.6f;
-    public float attackMinimumDistance = 10f;
+    public float attackMinimumDistance = 8f;
     private bool obstacleAvoidable = false;
     private float avoidObstacleDistance = 3f;
     public float moveDistanceAfterAttack = 3f;

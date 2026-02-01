@@ -4,6 +4,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
     public event Action OnInteractPressed;
+    public Vector2 MoveInput { get; private set; }
+    public Vector2 MouseInput { get; private set; }
 
     private void Awake()
     {
@@ -50,16 +52,25 @@ public class InputManager : MonoBehaviour
             UIController.Instance.ToggleFoldablePanel();
         }
         
-        // lock or unlock mouse
+        // if inventory shown, unlock cursor
         if (UIController.Instance.IsInventoryShown)
         {
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;                
+            Cursor.visible = true;
+            MoveInput = new Vector2(0, 0);
+            MouseInput = new Vector2(0, 0);
         }
+        // mouse look and keyboard movement only when inventory is not shown
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;        
+            Cursor.visible = false;   
+            float x = Input.GetAxisRaw("Horizontal");
+            float y = Input.GetAxisRaw("Vertical");
+            MoveInput = new Vector2(x, y);     
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+            MouseInput = new Vector2(mouseX, mouseY);
         }
     }
 }

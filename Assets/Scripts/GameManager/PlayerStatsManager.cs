@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStatsManager : MonoBehaviour
@@ -8,13 +9,19 @@ public class PlayerStatsManager : MonoBehaviour
         It also implements a singleton pattern to ensure only one instance of the manager exists.
         */
     public static PlayerStatsManager Instance;
-    public int currentHealth, maxHealth;
-    public int currentHunger, maxHunger;
-    public int starveDamageInterval;   // how often (in seconds) to take damage when hunger is 0;
-    public int starveDamageAmount;     // how much damage to take when hunger is 0
-    public int hungerReduceInterval;   // how often (in seconds) to reduce hunger
-    public int hungerReduceAmount ;     // how much hunger to reduce each interval
+    [SerializeField] private int currentHealth, maxHealth;
+    public int CurrentHealth => currentHealth;
+    [SerializeField] private int currentHunger, maxHunger;
+    public int CurrentHunger => currentHunger;
+    [SerializeField] private int starveDamageInterval;   // how often (in seconds) to take damage when hunger is 0;
+    [SerializeField] private int starveDamageAmount;     // how much damage to take when hunger is 0
+    [SerializeField] private int hungerReduceInterval;   // how often (in seconds) to reduce hunger
+    [SerializeField] private int hungerReduceAmount ;     // how much hunger to reduce each interval
     private float starveDamageTimer = 0f, hungerTickTimer = 0f;
+
+    public event Action<int> OnPlayerHealthChanged;
+    public event Action<int> OnPlayerHungerChanged;
+    public event Action OnPlayerDied;
     
     private void Awake()
     {
@@ -70,45 +77,32 @@ public class PlayerStatsManager : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        currentHealth -= amount;
-
-        if (currentHealth <= 0)
-        {
-            currentHealth = 0;
-            PlayerDie();
-        }
+        currentHealth  = Mathf.Max(0, currentHealth - amount);
+        OnPlayerHealthChanged?.Invoke(currentHealth);
+        if (currentHealth == 0) PlayerDie(); 
     }
 
     public void Heal(int amount)
     {
-        currentHealth += amount;
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
+        currentHealth  = Mathf.Min(maxHealth, currentHealth + amount);
+        OnPlayerHealthChanged?.Invoke(currentHealth);
     }
 
     public void ReduceHunger(int amount)
     {
-        currentHunger -= amount;
-        if (currentHunger <= 0)
-        {
-            currentHunger = 0;
-        }
+        currentHunger = Mathf.Max(0, currentHunger - amount);
+        OnPlayerHungerChanged?.Invoke(currentHunger);
     }
 
     public void AddHunger(int amount)
     {
-        currentHunger += amount;
-        if (currentHunger > maxHunger)
-        {
-            currentHunger = maxHunger;
-        }
+        currentHunger  = Mathf.Min(maxHunger, currentHunger + amount);
+        OnPlayerHungerChanged?.Invoke(currentHunger);
     }
 
     private void PlayerDie()
     {
-        // GameManager.Instance.OnPlayerDied();
+        OnPlayerDied?.Invoke();
         Debug.Log("Player Died");
     }
 }

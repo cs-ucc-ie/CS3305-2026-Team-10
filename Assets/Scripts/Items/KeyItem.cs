@@ -10,9 +10,9 @@ public class KeyItem : Item
 
     public override bool Use()
     {
-        // TODO
-        // Check whether in front of player is a door
-        // if it is: tell door to open
+        // it's not the player to use the key to open door, 
+        // but is the player to interact with door, 
+        // and the door will automatically remove one key from inventory
         return false;
     }
 }

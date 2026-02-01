@@ -4,6 +4,8 @@ See [`InventoryManager.cs`](../Assets/Scripts/GameManager/InventoryManager.cs)
 
 `InventoryManager` maintains player inventory.
 
+`InventoryManager` is singleton and mounted on [`GameManager.md`](./GameManager.md).
+
 It use `List<InventorySlot>` to store all slots.
 
 It also has a `List<InventorySlot>` containing 5 quick slots (for UI quick select usage), and a index pointing to selected quick slot.

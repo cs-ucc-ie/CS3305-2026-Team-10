@@ -5,7 +5,7 @@ public class CheckInteractable : MonoBehaviour
     public float interactDistance = 2f;
     private InteractableObject interactableObject;
 
-    void OnEnable()
+    void Start()
     {
         InputManager.Instance.OnInteractPressed += TryInteract;
     }

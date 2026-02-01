@@ -1,11 +1,31 @@
 # Player
 
-The player GameObject acts as the primary controller for the user. It integrates three core functional scripts:
+The player GameObject acts as the primary controller for the user. It integrates three core functional scripts.
 
-TODO input should be moved into input manager
+## KeyboardMovement
 
-- [`Movement.cs`](../Assets/Scripts/Items/Item.cs): Handles keyboard-based locomotion.
+See [`KeyboardMovement.cs`](../Assets/Scripts/Player/KeyboardMovement.cs)
 
-- Look: Manages mouse-driven camera rotation.
+Keyboard movement input is read from [`InputManager`](./InputManager.md).
 
-- Interaction: Performs raycasting to detect and trigger interactable objects in the world."
+`KeyboardMovement` handles player character controller movement, as well as giving an fake -9.8f gravity.
+
+## MouseLook
+
+See [`MouseLook.cs`](../Assets/Scripts/Player/MouseLook.cs)
+
+Mouse movement input is read from [`InputManager`](./InputManager.md).
+
+This script handles the mouse look functionality for a first-person camera.
+
+It rotates the camera and player based on mouse movement.
+
+Remember: X axis is bind on player, Y axis is bind on camera.
+
+## CheckInteractable
+
+See [`CheckInteractable.cs`](../Assets/Scripts/Player/CheckInteractable.cs)
+
+Performs raycasting to detect and trigger interactable objects in the world.
+
+When [`InputManager`](./InputManager.md) invoke an `OnInteractPressed` event, `CheckInteractable` will perform a raycasting to detect and trigger [`InteractableObject.md`](./InteractableObject.md) in the world.
