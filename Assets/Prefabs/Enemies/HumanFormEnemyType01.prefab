@@ -148,7 +148,7 @@ MonoBehaviour:
   idleMoveSpeed: 2
   minimumAttackDistance: 8
   engageMoveSpeed: 3
-  obstacleCheckDistance: 1
+  obstacleCheckDistance: 2
   avoidObstacleDistance: 3
   engageMoveMinDistance: 3
   engageMoveMaxDistance: 5

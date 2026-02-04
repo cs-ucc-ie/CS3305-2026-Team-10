@@ -198,10 +198,24 @@ public class HumanFormEnemyAI : EnemyAI
         switch (engageState)
         {
             case HumanFormEnemyEngageState.TryMoveCloserToAttackTarget:
-                // 安排一个与 target 直线上的位置，让 motor 移动过去
-                Vector3 directionFromTarget = transform.position - attackTarget.position;
-                //if (directionFromTarget.sqrMagnitude > 0.001f)
-                Vector3 resultPoint = attackTarget.position + directionFromTarget.normalized * (minimumAttackDistance - 1);
+                // 敌人和目标之间连线，检查线上是否有障碍物
+                Vector3 directionToTarget = attackTarget.position - transform.position;
+                float distanceToTarget = directionToTarget.magnitude;
+                Vector3 directionNormalized = directionToTarget.normalized;
+
+                Vector3 resultPoint = attackTarget.position + (-directionToTarget.normalized) * (minimumAttackDistance - 1);
+
+                // 检查敌人和目标之间的直线上是否有障碍物
+                if (Physics.Raycast(transform.position, directionNormalized, out RaycastHit hit, distanceToTarget))
+                {
+                    // 如果击中的不是目标，说明有障碍物
+                    if (hit.transform != attackTarget)
+                    {
+                        // 移动到障碍物之前 obstacleCheckDistance 的位置
+                        resultPoint = hit.point - directionNormalized * obstacleCheckDistance;
+                    }
+                }
+
                 motor.RotateAndMoveTo(resultPoint, engageMoveSpeed);
                 engageState = HumanFormEnemyEngageState.WaitMoveComplete;
                 animator.BeginAnimation(HumanFormEnemyAnimationState.Walk);
@@ -213,19 +227,30 @@ public class HumanFormEnemyAI : EnemyAI
             case HumanFormEnemyEngageState.CheckCanHitTarget:
                 // 检查能否命中玩家
                 float distance = Vector3.Distance(transform.position, attackTarget.position);
-                if (distance <= minimumAttackDistance)
-                {
-                    Debug.Log("distance ok");
+
+                // if (distance <= minimumAttackDistance)
+                // {
+                //     Debug.Log("distance ok");
                     // 当前位置与玩家进行一次连线检测
                     Vector3 direction = (attackTarget.position - transform.position).normalized;
-                    if (Physics.Raycast(transform.position, direction, out RaycastHit hit, distance))
+                    if (Physics.Raycast(transform.position, direction, out hit, distance))
                     {
                         Debug.Log("hit: " + hit.transform.name);
                         // 如果射线击中的是玩家
                         if (hit.collider.CompareTag("Player"))
                         {
-                            Debug.Log("can hit target");
+                            // 如果距离也 OK
+                            if (distance <= minimumAttackDistance){
+Debug.Log("can hit target");
                             engageState = HumanFormEnemyEngageState.BeginAttackStartupAnimation;
+                            }
+                            // 如果距离太远，就靠近     
+                            else
+                            {
+                                Debug.Log("too far to attack");
+                                
+                                engageState = HumanFormEnemyEngageState.TryMoveCloserToAttackTarget;
+                            }
                         }
                         else if (!hit.collider.CompareTag("EnemyProjectile")) // 到玩家的连线上有障碍物，但不是自己的子弹
                         {
@@ -240,13 +265,6 @@ public class HumanFormEnemyAI : EnemyAI
                         // 没有击中任何东西，说明可以命中玩家
                         engageState = HumanFormEnemyEngageState.BeginAttackStartupAnimation;
                     }
-                }
-                else
-                {
-                    Debug.Log("too far to attack");
-                    // 如果距离太远，就靠近
-                    engageState = HumanFormEnemyEngageState.TryMoveCloserToAttackTarget;
-                }
                 break;
             case HumanFormEnemyEngageState.AssignMoveTargetToAvoidObstacle:
                 // 当前没法命中玩家，只能选择新地点避开障碍物
